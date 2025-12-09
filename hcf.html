@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCF Pro Max - 重新定义逻辑</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for Scroll Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #000;
+            color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            /* 加上一点模糊遮罩让文字更清晰，就像Apple官网那样 */
+            /* opacity: 0.8; */
+        }
+
+        .section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            opacity: 0; /* Initial state for GSAP */
+            transform: translateY(50px);
+        }
+
+        /* 新增：大头照呼吸灯效果 */
+        .avatar-container {
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(41, 151, 255, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 0 60px rgba(41, 151, 255, 0.6); }
+        }
+
+        .hero-text {
+            background: linear-gradient(180deg, #ffb6ff, #b344ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-blue {
+            background: linear-gradient(180deg, #2997ff, #7bf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-red {
+            background: linear-gradient(180deg, #ff5e3a, #ff2a68);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-gold {
+            background: linear-gradient(180deg, #ffe082, #ffb300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-content {
+            max-width: 980px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+        }
+
+        .btn-buy {
+            background: #0071e3;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        
+        .disclaimer {
+            font-size: 10px;
+            color: #86868b;
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        p {
+            font-weight: 400;
+            color: #86868b;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <span class="font-bold text-lg tracking-tight">HCF Pro Max</span>
+            <div class="space-x-4">
+                <a href="#" class="text-gray-300 hover:text-white transition">概览</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">参数</a>
+                <a href="#" class="btn-buy">购买</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Sections -->
+    <main>
+        <!-- Section 1: Hero -->
+        <section class="section" id="section-hero">
+            <h2 class="text-xl md:text-2xl font-semibold mb-2 text-orange-400">全新登场</h2>
+            
+            <!-- 新增：HCF 严肃大头照 -->
+            <div class="avatar-container w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-gray-800 mb-8 relative group z-10 bg-gray-900">
+                <img src="https://qwerimage.oss-cn-shanghai.aliyuncs.com/20251209142856326.jpg" 
+                     alt="HCF Avatar" 
+                     class="w-full h-full object-cover transform transition duration-700 group-hover:scale-110 group-hover:rotate-3">
+                
+                <!-- 悬停红温特效层 -->
+                <div class="absolute inset-0 bg-red-600 mix-blend-overlay opacity-0 group-hover:opacity-60 transition duration-300 pointer-events-none"></div>
+            </div>
+
+            <h1 class="text-5xl md:text-8xl mb-4 hero-text">HCF Pro Max</h1>
+            <h3 class="text-2xl md:text-4xl text-white font-medium">更大的逻辑。<br>甚至不需要 10 块钱。</h3>
+            <p class="mt-6 text-xl">搭载全新一代 Chenfeng Silicon M∞ Max 逻辑芯片，商业超市级强悍算力。</p>
+        </section>
+
+        <!-- Section 2: Material/Values -->
+        <section class="section" id="section-values">
+            <h2 class="text-5xl md:text-7xl font-bold mb-6">这是物价。<br><span class="gradient-text-gold">这很合理。</span></h2>
+            <p class="text-2xl text-gray-400">
+                无论是 5 块钱的鸡腿饭，还是 200 块的牛排。<br>
+                HCF Pro Max 都能通过内置的 Neural Engine 瞬间判断其性价比。<br>
+                <span class="text-white mt-4 block">这就是商业的魅力。</span>
+            </p>
+        </section>
+
+        <!-- Section 3: The "Anger" Core (Social Security) -->
+        <section class="section" id="section-anger">
+            <h2 class="text-5xl md:text-8xl font-bold mb-4 gradient-text-red">不可能不交！</h2>
+            <div class="max-w-2xl mx-auto">
+                <p class="text-2xl md:text-3xl text-white font-semibold mb-4">
+                    Face ID? No. Social Security ID.
+                </p>
+                <p class="text-lg">
+                    我们重新设计了支付架构。当面对是否缴纳税款的问题时，
+                    系统会自动进入 <span class="text-red-500 font-bold">RAGE MODE (红温模式)</span>。
+                    这不是选择，这是义务。😡
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 4: Battery/Endurance -->
+        <section class="section" id="section-battery">
+            <h2 class="text-5xl md:text-7xl font-bold mb-6 gradient-text-blue">全天候逻辑在线。</h2>
+            <p class="text-xl">
+                即便是在面对最刁钻的网友提问时，<br>
+                也能保持高强度的逻辑输出。<br>
+                这就是 HCF Pro Max 的 Max 之处。
+            </p>
+            <div class="mt-10 grid grid-cols-2 gap-8 text-left max-w-lg mx-auto">
+                <div>
+                    <div class="text-4xl font-bold text-white">100%</div>
+                    <div class="text-sm text-gray-500">纯理性占比</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-white">0%</div>
+                    <div class="text-sm text-gray-500">情绪化波动 (红温除外)</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 5: Call to Action -->
+        <section class="section" style="min-height: 50vh;">
+            <h2 class="text-4xl font-bold mb-4">HCF Pro Max</h2>
+            <p class="mb-8">逻辑强悍，价格感人。</p>
+            <a href="#" class="bg-white text-black px-8 py-3 rounded-full text-lg font-medium hover:bg-gray-200 transition">进一步了解</a>
+            <p class="disclaimer">
+                * 以上内容纯属虚构。<br>
+                * 这里的"Pro"并不代表任何实际产品。<br>
+                * 把鼠标放在户晨风大头照上，他会红温。<br>
+                * 所谓"红温模式"可能会导致设备温度升高（并不会）。
+            </p>
+        </section>
+    </main>
+
+    <script>
+        // 注册 GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- Three.js Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        // 给场景一点雾气，增加深度感 (Apple 风格)
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 优化性能
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        container.appendChild(renderer.domElement);
+
+        // --- Objects ---
+        // 我们创建一个复杂的几何体代表"逻辑核心"
+        // 使用 Icosahedron (二十面体) 因为它看起来很有科技感
+        const geometry = new THREE.IcosahedronGeometry(1.8, 1); 
+        
+        // 材质：类似钛金属的质感
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0xaaaaaa, // 初始银色
+            metalness: 0.9,
+            roughness: 0.2,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            flatShading: true, // Flat shading 让面更明显，更有棱角（象征逻辑严密）
+        });
+
+        const coreMesh = new THREE.Mesh(geometry, material);
+        // 将初始位置向后移，避免太靠前 (已调整)
+        coreMesh.position.z = -2;
+        scene.add(coreMesh);
+
+        // 添加一个线框外壳，增加科技感
+        const wireGeo = new THREE.IcosahedronGeometry(2.0, 1);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x444444, wireframe: true, transparent: true, opacity: 0.3 });
+        const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+        scene.add(wireMesh);
+
+        // --- Lighting ---
+        // Apple 风格通常是工作室布光
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+
+        const spotLight1 = new THREE.SpotLight(0xffffff, 2);
+        spotLight1.position.set(10, 10, 10);
+        spotLight1.angle = 0.5;
+        spotLight1.penumbra = 1;
+        scene.add(spotLight1);
+
+        const spotLight2 = new THREE.SpotLight(0x0071e3, 2); // 蓝色轮廓光
+        spotLight2.position.set(-10, -10, 5);
+        scene.add(spotLight2);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(0, 0, 5);
+        scene.add(pointLight);
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 基础自转
+            coreMesh.rotation.y += 0.002;
+            wireMesh.rotation.y -= 0.001;
+            wireMesh.rotation.x += 0.001;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- Resize Handler ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- GSAP Animations ---
+
+        // 1. 文字淡入效果
+        gsap.utils.toArray('.section').forEach((section) => {
+            gsap.to(section, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 70%",
+                    end: "top 30%",
+                    scrub: 1,
+                }
+            });
+        });
+
+        // 2. 3D 核心模型根据滚动变化
+        const timeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5 // 平滑延迟
+            }
+        });
+
+        // 初始状态已经在 Three.js 里设置好了 (z = -2)
+
+        // -> 进入第二部分 (Section Values: 金色/物价)
+        // 调整 z 值，保持相对移动但整体更靠后
+        timeline.to(coreMesh.rotation, { x: 2, y: 3, duration: 2 }, "phase1")
+                .to(coreMesh.position, { x: 1.5, z: -1, duration: 2 }, "phase1") // 移到右侧，z 从 -2 到 -1
+                .to(material.color, { r: 1.0, g: 0.8, b: 0.1, duration: 2 }, "phase1") // 变金
+                .to(wireMat.color, { r: 1.0, g: 0.6, b: 0.0, duration: 2 }, "phase1");
+
+        // -> 进入第三部分 (Section Anger: 红色/红温)
+        // 调整 z 值，这是最靠前的一刻，设为 0.5 (原为 3)
+        timeline.to(coreMesh.rotation, { x: 4, y: 0, duration: 2 }, "phase2")
+                .to(coreMesh.position, { x: 0, z: 0.5, duration: 2 }, "phase2") // 怼到中间，变大
+                .to(material.color, { r: 1.0, g: 0.1, b: 0.1, duration: 1 }, "phase2") // 变红 (红温)
+                .to(material, { roughness: 0.6, metalness: 0.1, duration: 1 }, "phase2") // 变得粗糙
+                .to(coreMesh.scale, { x: 1.2, y: 1.2, z: 1.2, duration: 0.5, yoyo: true, repeat: 5 }, "phase2"); // 愤怒地脉动
+
+        // -> 进入第四部分 (Section Battery: 蓝色/冷静)
+        // 调整 z 值，回到较远的位置 (z = -2)
+        timeline.to(coreMesh.rotation, { x: 6, y: 6, duration: 2 }, "phase3")
+                .to(coreMesh.position, { x: -1.5, z: -2, duration: 2 }, "phase3") // 移到左侧
+                .to(material.color, { r: 0.2, g: 0.6, b: 1.0, duration: 2 }, "phase3") // 变蓝
+                .to(material, { roughness: 0.2, metalness: 0.9, duration: 2 }, "phase3") // 恢复光泽
+                .to(coreMesh.scale, { x: 1, y: 1, z: 1, duration: 2 }, "phase3");
+
+        // -> 结尾
+        // 调整 z 值，退得更远 (z = -4)
+        timeline.to(coreMesh.position, { x: 0, y: 0, z: -4, duration: 2 }, "phase4");
+
+        // 鼠标交互：轻微的视差移动
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 2 - 1;
+            const y = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            gsap.to(coreMesh.rotation, {
+                x: `+=${y * 0.1}`,
+                y: `+=${x * 0.1}`,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
+
+    </script>
+</body>
+</html>
