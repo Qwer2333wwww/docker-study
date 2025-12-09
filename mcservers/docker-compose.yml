@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # 代理服务器 (Velocity)
+  velocity:
+    image: itzg/minecraft-velocity
+    container_name: mc-velocity
+    restart: unless-stopped
+    ports:
+      - "25565:25565"
+    environment:
+      TYPE: VELOCITY
+      VERSION: latest
+      VELOCITY_FORWARDING_SECRET_FILE: /secrets/forwarding.secret
+    volumes:
+      - ./velocity:/data
+      - ./secrets:/secrets:ro
+    networks:
+      - mc-network
+    depends_on:
+      - lobby
+
+  # 子服 1: 大厅 (Lobby) 
+  lobby:
+    image: itzg/minecraft-server
+    container_name: mc-lobby
+    restart: unless-stopped
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: latest
+      ONLINE_MODE: "FALSE"
+      MEMORY: 2G
+      CFG_PROXIES_VELOCITY_ENABLED: "true"
+      CFG_PROXIES_VELOCITY_ONLINE_MODE: "true"
+      CFG_PROXIES_VELOCITY_SECRET_FILE: /secrets/forwarding.secret
+    volumes:
+      - ./lobby:/data
+      - ./secrets:/secrets:ro
+    networks:
+      - mc-network
+
+  # 子服 2: 生存服 (Survival)
+  survival:
+    image: itzg/minecraft-server
+    container_name: mc-survival
+    restart: unless-stopped
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: latest
+      ONLINE_MODE: "FALSE"
+      MEMORY: 4G
+      CFG_PROXIES_VELOCITY_ENABLED: "true"
+      CFG_PROXIES_VELOCITY_ONLINE_MODE: "true"
+      CFG_PROXIES_VELOCITY_SECRET_FILE: /secrets/forwarding.secret
+    volumes:
+      - ./survival:/data
+      - ./secrets:/secrets:ro
+    networks:
+      - mc-network
+
+networks:
+  mc-network:
+    driver: bridge

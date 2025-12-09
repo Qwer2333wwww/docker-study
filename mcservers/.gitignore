@@ -1,0 +1,10 @@
+velocity/*
+lobby/*
+survival/*
+
+!velocity/.gitkeep
+!lobby/.gitkeep
+!survival/.gitkeep
+
+.DS_Store
+Thumbs.db
